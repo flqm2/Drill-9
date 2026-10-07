@@ -40,6 +40,10 @@ def handle_events(pressed_keys):
 def update_character(state, pressed_keys, dt):
     dx = int(pico2d.SDLK_RIGHT in pressed_keys) - int(pico2d.SDLK_LEFT in pressed_keys)
     dy = int(pico2d.SDLK_UP in pressed_keys) - int(pico2d.SDLK_DOWN in pressed_keys)
+    if dx > 0:
+        state.facing = "RIGHT"
+    elif dx < 0:
+        state.facing = "LEFT"
     length = hypot(dx, dy)
     if length:
         dx /= length
@@ -67,7 +71,7 @@ def main():
             update_character(state, pressed_keys, dt)
             pico2d.clear_canvas()
             background.draw(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, SCREEN_WIDTH, SCREEN_HEIGHT)
-            character.clip_draw(0, character.h - FRAME_HEIGHT, FRAME_WIDTH, FRAME_HEIGHT,
+            character.clip_draw(0, character.h - (1 if state.facing == "RIGHT" else 2) * FRAME_HEIGHT, FRAME_WIDTH, FRAME_HEIGHT,
                                 state.x, state.y)
             pico2d.update_canvas()
             pico2d.delay(0.01)
