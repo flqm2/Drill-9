@@ -1,6 +1,7 @@
 """소년 이동 실습: 방향키를 누르는 동안 이동한다."""
 
 from dataclasses import dataclass
+from math import hypot
 from pathlib import Path
 from time import perf_counter
 
@@ -39,6 +40,10 @@ def handle_events(pressed_keys):
 def update_character(state, pressed_keys, dt):
     dx = int(pico2d.SDLK_RIGHT in pressed_keys) - int(pico2d.SDLK_LEFT in pressed_keys)
     dy = int(pico2d.SDLK_UP in pressed_keys) - int(pico2d.SDLK_DOWN in pressed_keys)
+    length = hypot(dx, dy)
+    if length:
+        dx /= length
+        dy /= length
     state.y += dy * MOVE_SPEED * dt
     state.x += dx * MOVE_SPEED * dt
 
