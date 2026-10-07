@@ -11,12 +11,14 @@ RESOURCE_DIR = Path(__file__).resolve().parent.parent / "Resourse"
 
 def main():
     pico2d.open_canvas(SCREEN_WIDTH, SCREEN_HEIGHT)
+    background = pico2d.load_image(str(RESOURCE_DIR / "TUK_GROUND.png"))
     running = True
     while running:
         for event in pico2d.get_events():
             if event.type == pico2d.SDL_QUIT:
                 running = False
         pico2d.clear_canvas()
+        background.draw(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, SCREEN_WIDTH, SCREEN_HEIGHT)
         pico2d.update_canvas()
         pico2d.delay(0.01)
     pico2d.close_canvas()
