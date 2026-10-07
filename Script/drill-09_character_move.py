@@ -1,5 +1,6 @@
 """소년 이동 실습: 방향키를 누르는 동안 이동한다."""
 
+from dataclasses import dataclass
 from pathlib import Path
 
 import pico2d
@@ -12,11 +13,19 @@ FRAME_COUNT = 8
 RESOURCE_DIR = Path(__file__).resolve().parent.parent / "Resourse"
 
 
+@dataclass
+class CharacterState:
+    x: float = SCREEN_WIDTH / 2
+    y: float = SCREEN_HEIGHT / 2
+    facing: str = "RIGHT"
+
+
 def main():
     pico2d.open_canvas(SCREEN_WIDTH, SCREEN_HEIGHT)
     try:
         background = pico2d.load_image(str(RESOURCE_DIR / "TUK_GROUND.png"))
         character = pico2d.load_image(str(RESOURCE_DIR / "animation_sheet.png"))
+        state = CharacterState()
         running = True
         while running:
             for event in pico2d.get_events():
@@ -25,7 +34,7 @@ def main():
             pico2d.clear_canvas()
             background.draw(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, SCREEN_WIDTH, SCREEN_HEIGHT)
             character.clip_draw(0, character.h - FRAME_HEIGHT, FRAME_WIDTH, FRAME_HEIGHT,
-                                SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
+                                state.x, state.y)
             pico2d.update_canvas()
             pico2d.delay(0.01)
     finally:
