@@ -11,6 +11,7 @@ SCREEN_HEIGHT = 1024
 FRAME_WIDTH = 100
 FRAME_HEIGHT = 100
 FRAME_COUNT = 8
+MOVE_SPEED = 250.0
 ARROW_KEYS = {pico2d.SDLK_LEFT, pico2d.SDLK_RIGHT, pico2d.SDLK_UP, pico2d.SDLK_DOWN}
 RESOURCE_DIR = Path(__file__).resolve().parent.parent / "Resourse"
 
@@ -35,6 +36,11 @@ def handle_events(pressed_keys):
     return running
 
 
+def update_character(state, pressed_keys, dt):
+    dx = int(pico2d.SDLK_RIGHT in pressed_keys) - int(pico2d.SDLK_LEFT in pressed_keys)
+    state.x += dx * MOVE_SPEED * dt
+
+
 def main():
     pico2d.open_canvas(SCREEN_WIDTH, SCREEN_HEIGHT)
     try:
@@ -51,6 +57,7 @@ def main():
             current_time = perf_counter()
             dt = current_time - previous_time
             previous_time = current_time
+            update_character(state, pressed_keys, dt)
             pico2d.clear_canvas()
             background.draw(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, SCREEN_WIDTH, SCREEN_HEIGHT)
             character.clip_draw(0, character.h - FRAME_HEIGHT, FRAME_WIDTH, FRAME_HEIGHT,
