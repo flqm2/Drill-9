@@ -2,6 +2,7 @@
 
 from dataclasses import dataclass
 from pathlib import Path
+from time import perf_counter
 
 import pico2d
 
@@ -42,10 +43,14 @@ def main():
         state = CharacterState()
         pressed_keys = set()
         running = True
+        previous_time = perf_counter()
         while running:
             running = handle_events(pressed_keys)
             if not running:
                 break
+            current_time = perf_counter()
+            dt = current_time - previous_time
+            previous_time = current_time
             pico2d.clear_canvas()
             background.draw(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, SCREEN_WIDTH, SCREEN_HEIGHT)
             character.clip_draw(0, character.h - FRAME_HEIGHT, FRAME_WIDTH, FRAME_HEIGHT,
