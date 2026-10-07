@@ -77,6 +77,17 @@ def update_animation(state, dt):
         state.animation_time -= steps * interval
 
 
+def render(background, character, state):
+    pico2d.clear_canvas()
+    background.draw(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, SCREEN_WIDTH, SCREEN_HEIGHT)
+    # 이미지 위쪽 1·2행을 pico2d의 아래쪽 기준 좌표로 변환한다.
+    row = 1 if state.facing == "RIGHT" else 2
+    source_y = character.h - row * FRAME_HEIGHT
+    character.clip_draw(state.frame * FRAME_WIDTH, source_y, FRAME_WIDTH, FRAME_HEIGHT,
+                        state.x, state.y)
+    pico2d.update_canvas()
+
+
 def main():
     pico2d.open_canvas(SCREEN_WIDTH, SCREEN_HEIGHT)
     try:
@@ -95,11 +106,7 @@ def main():
             previous_time = current_time
             update_character(state, pressed_keys, dt)
             update_animation(state, dt)
-            pico2d.clear_canvas()
-            background.draw(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, SCREEN_WIDTH, SCREEN_HEIGHT)
-            character.clip_draw(state.frame * FRAME_WIDTH, character.h - (1 if state.facing == "RIGHT" else 2) * FRAME_HEIGHT, FRAME_WIDTH, FRAME_HEIGHT,
-                                state.x, state.y)
-            pico2d.update_canvas()
+            render(background, character, state)
             pico2d.delay(0.01)
     finally:
         pico2d.close_canvas()
