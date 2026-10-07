@@ -43,6 +43,7 @@ def handle_events(pressed_keys):
 
 
 def update_character(state, pressed_keys, dt):
+    previous = (state.mode, state.facing)
     dx = int(pico2d.SDLK_RIGHT in pressed_keys) - int(pico2d.SDLK_LEFT in pressed_keys)
     dy = int(pico2d.SDLK_UP in pressed_keys) - int(pico2d.SDLK_DOWN in pressed_keys)
     if dx > 0:
@@ -51,6 +52,9 @@ def update_character(state, pressed_keys, dt):
         state.facing = "LEFT"
     length = hypot(dx, dy)
     state.mode = "MOVE" if length else "IDLE"
+    if previous != (state.mode, state.facing):
+        state.frame = 0
+        state.animation_time = 0.0
     if length:
         dx /= length
         dy /= length
