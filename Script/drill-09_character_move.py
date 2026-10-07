@@ -38,6 +38,8 @@ def handle_events(pressed_keys):
 
 def update_character(state, pressed_keys, dt):
     dx = int(pico2d.SDLK_RIGHT in pressed_keys) - int(pico2d.SDLK_LEFT in pressed_keys)
+    dy = int(pico2d.SDLK_UP in pressed_keys) - int(pico2d.SDLK_DOWN in pressed_keys)
+    state.y += dy * MOVE_SPEED * dt
     state.x += dx * MOVE_SPEED * dt
 
 
