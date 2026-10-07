@@ -68,7 +68,7 @@ def update_character(state, pressed_keys, dt):
 
 
 def update_animation(state, dt):
-    # 별도 IDLE 행이 없어 허용된 상단 두 행을 정지 상태에서도 순환한다.
+    # 정지 상태와 이동 상태에 맞는 속도로 각각의 애니메이션을 순환한다.
     interval = MOVE_FRAME_SECONDS if state.mode == "MOVE" else IDLE_FRAME_SECONDS
     state.animation_time += dt
     steps = int(state.animation_time / interval)
@@ -80,8 +80,11 @@ def update_animation(state, dt):
 def render(background, character, state):
     pico2d.clear_canvas()
     background.draw(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, SCREEN_WIDTH, SCREEN_HEIGHT)
-    # 이미지 위쪽 1·2행을 pico2d의 아래쪽 기준 좌표로 변환한다.
+    # 위쪽 기준 IDLE은 1·2행, MOVE는 3·4행을 사용한다.
     row = 1 if state.facing == "RIGHT" else 2
+    if state.mode == "MOVE":
+        row += 2
+    # 이미지 위쪽 기준 행을 pico2d의 아래쪽 기준 클리핑 좌표로 변환한다.
     source_y = character.h - row * FRAME_HEIGHT
     character.clip_draw(state.frame * FRAME_WIDTH, source_y, FRAME_WIDTH, FRAME_HEIGHT,
                         state.x, state.y)

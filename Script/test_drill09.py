@@ -114,14 +114,18 @@ class CharacterMovementTests(unittest.TestCase):
             game.handle_events(keys)
         self.assertEqual(keys, set())
 
-    def test_render_uses_only_top_two_rows(self):
+    def test_render_selects_idle_and_move_rows_for_both_directions(self):
         background, character = Mock(), Mock(h=402)
         with patch.object(p, "clear_canvas"), patch.object(p, "update_canvas"):
-            for facing, source_y in (("RIGHT", 302), ("LEFT", 202)):
-                state = game.CharacterState(facing=facing, frame=7)
-                game.render(background, character, state)
-                character.clip_draw.assert_called_with(700, source_y, 100, 100,
-                                                       state.x, state.y)
+            for mode, facing, source_y in (("IDLE", "RIGHT", 302),
+                                           ("IDLE", "LEFT", 202),
+                                           ("MOVE", "RIGHT", 102),
+                                           ("MOVE", "LEFT", 2)):
+                with self.subTest(mode=mode, facing=facing):
+                    state = game.CharacterState(mode=mode, facing=facing, frame=7)
+                    game.render(background, character, state)
+                    character.clip_draw.assert_called_with(700, source_y, 100, 100,
+                                                           state.x, state.y)
 
     def test_window_close_and_cleanup(self):
         with patch.object(p, "get_events", return_value=[SimpleNamespace(type=p.SDL_QUIT)]), \
