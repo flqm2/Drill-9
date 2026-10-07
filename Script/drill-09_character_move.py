@@ -21,6 +21,19 @@ class CharacterState:
     facing: str = "RIGHT"
 
 
+def handle_events(pressed_keys):
+    """키 반복 여부와 관계없이 현재 눌린 방향키를 기록한다."""
+    running = True
+    for event in pico2d.get_events():
+        if event.type == pico2d.SDL_QUIT:
+            running = False
+        elif event.type == pico2d.SDL_KEYDOWN and event.key in ARROW_KEYS:
+            pressed_keys.add(event.key)
+        elif event.type == pico2d.SDL_KEYUP:
+            pressed_keys.discard(event.key)
+    return running
+
+
 def main():
     pico2d.open_canvas(SCREEN_WIDTH, SCREEN_HEIGHT)
     try:
@@ -30,13 +43,9 @@ def main():
         pressed_keys = set()
         running = True
         while running:
-            for event in pico2d.get_events():
-                if event.type == pico2d.SDL_QUIT:
-                    running = False
-                elif event.type == pico2d.SDL_KEYDOWN and event.key in ARROW_KEYS:
-                    pressed_keys.add(event.key)
-                elif event.type == pico2d.SDL_KEYUP:
-                    pressed_keys.discard(event.key)
+            running = handle_events(pressed_keys)
+            if not running:
+                break
             pico2d.clear_canvas()
             background.draw(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, SCREEN_WIDTH, SCREEN_HEIGHT)
             character.clip_draw(0, character.h - FRAME_HEIGHT, FRAME_WIDTH, FRAME_HEIGHT,
