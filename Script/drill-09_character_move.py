@@ -60,6 +60,8 @@ def update_character(state, pressed_keys, dt):
         dy /= length
     state.y += dy * MOVE_SPEED * dt
     state.x += dx * MOVE_SPEED * dt
+    state.x = max(FRAME_WIDTH / 2, min(SCREEN_WIDTH - FRAME_WIDTH / 2, state.x))
+    state.y = max(FRAME_HEIGHT / 2, min(SCREEN_HEIGHT - FRAME_HEIGHT / 2, state.y))
 
 
 def update_animation(state, dt):
