@@ -2,9 +2,12 @@
 
 import pico2d
 
+SCREEN_WIDTH = 1280
+SCREEN_HEIGHT = 1024
+
 
 def main():
-    pico2d.open_canvas()
+    pico2d.open_canvas(SCREEN_WIDTH, SCREEN_HEIGHT)
     running = True
     while running:
         for event in pico2d.get_events():
