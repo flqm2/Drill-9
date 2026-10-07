@@ -13,6 +13,8 @@ FRAME_WIDTH = 100
 FRAME_HEIGHT = 100
 FRAME_COUNT = 8
 MOVE_SPEED = 250.0
+MOVE_FRAME_SECONDS = 0.10
+IDLE_FRAME_SECONDS = 0.20
 ARROW_KEYS = {pico2d.SDLK_LEFT, pico2d.SDLK_RIGHT, pico2d.SDLK_UP, pico2d.SDLK_DOWN}
 RESOURCE_DIR = Path(__file__).resolve().parent.parent / "Resourse"
 
@@ -23,6 +25,8 @@ class CharacterState:
     y: float = SCREEN_HEIGHT / 2
     facing: str = "RIGHT"
     mode: str = "IDLE"
+    frame: int = 0
+    animation_time: float = 0.0
 
 
 def handle_events(pressed_keys):
@@ -54,6 +58,16 @@ def update_character(state, pressed_keys, dt):
     state.x += dx * MOVE_SPEED * dt
 
 
+def update_animation(state, dt):
+    # 별도 IDLE 행이 없어 허용된 상단 두 행을 정지 상태에서도 순환한다.
+    interval = MOVE_FRAME_SECONDS if state.mode == "MOVE" else IDLE_FRAME_SECONDS
+    state.animation_time += dt
+    steps = int(state.animation_time / interval)
+    if steps:
+        state.frame = (state.frame + steps) % FRAME_COUNT
+        state.animation_time -= steps * interval
+
+
 def main():
     pico2d.open_canvas(SCREEN_WIDTH, SCREEN_HEIGHT)
     try:
@@ -71,9 +85,10 @@ def main():
             dt = current_time - previous_time
             previous_time = current_time
             update_character(state, pressed_keys, dt)
+            update_animation(state, dt)
             pico2d.clear_canvas()
             background.draw(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, SCREEN_WIDTH, SCREEN_HEIGHT)
-            character.clip_draw(0, character.h - (1 if state.facing == "RIGHT" else 2) * FRAME_HEIGHT, FRAME_WIDTH, FRAME_HEIGHT,
+            character.clip_draw(state.frame * FRAME_WIDTH, character.h - (1 if state.facing == "RIGHT" else 2) * FRAME_HEIGHT, FRAME_WIDTH, FRAME_HEIGHT,
                                 state.x, state.y)
             pico2d.update_canvas()
             pico2d.delay(0.01)
