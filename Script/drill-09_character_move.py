@@ -22,6 +22,7 @@ class CharacterState:
     x: float = SCREEN_WIDTH / 2
     y: float = SCREEN_HEIGHT / 2
     facing: str = "RIGHT"
+    mode: str = "IDLE"
 
 
 def handle_events(pressed_keys):
@@ -45,6 +46,7 @@ def update_character(state, pressed_keys, dt):
     elif dx < 0:
         state.facing = "LEFT"
     length = hypot(dx, dy)
+    state.mode = "MOVE" if length else "IDLE"
     if length:
         dx /= length
         dy /= length
