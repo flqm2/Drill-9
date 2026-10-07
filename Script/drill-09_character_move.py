@@ -1,9 +1,12 @@
 """소년 이동 실습: 방향키를 누르는 동안 이동한다."""
 
+from pathlib import Path
+
 import pico2d
 
 SCREEN_WIDTH = 1280
 SCREEN_HEIGHT = 1024
+RESOURCE_DIR = Path(__file__).resolve().parent.parent / "Resourse"
 
 
 def main():
