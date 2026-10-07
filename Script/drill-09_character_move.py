@@ -39,6 +39,9 @@ def handle_events(pressed_keys):
             pressed_keys.add(event.key)
         elif event.type == pico2d.SDL_KEYUP:
             pressed_keys.discard(event.key)
+    # pico2d.get_events()는 창 포커스 이벤트를 반환하지 않으므로 SDL로 확인한다.
+    if not pico2d.SDL_GetKeyboardFocus():
+        pressed_keys.clear()
     return running
 
 
